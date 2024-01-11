@@ -42,7 +42,7 @@ pip install -r requirements-cpu.txt
 ## Usage
 Run the application using the following command:
 ```bash
-python shot_detector.py [path to video file] [--disp] [--debug] [--save/--no-save]
+python src/bbshot_counter_app.py [path to video file] [--disp] [--debug] [--save/--no-save]
 ```
 
 - `vid_path`: Path to the video file or directory containing multiple videos.
@@ -54,17 +54,17 @@ python shot_detector.py [path to video file] [--disp] [--debug] [--save/--no-sav
 ## Example
 Process a single video and display the output:
 ```bash
-python shot_detector.py ./path/to/video.mp4 --disp
+python src/bbshot_counter_app.py ./path/to/video.mp4 --disp
 ```
 
 Process all videos in a directory without displaying:
 ```bash
-python shot_detector.py ./path/to/videos/
+python src/bbshot_counter_app.py ./path/to/videos/
 ```
 
 Enable debugging for a specific video:
 ```bash
-python shot_detector.py ./path/to/video.mp4 --debug
+python src/bbshot_counter_app.py ./path/to/video.mp4 --debug
 ```
 
 ## Contributing
