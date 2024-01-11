@@ -243,7 +243,7 @@ def download_missing_model_files():
     """Download missing model files from Google Drive."""
     models_dir = get_correct_path(os.path.join('data', 'models'))
     model_files = ['yolov8s_bb_det_bigdtst_50e_best.pt']  # replace with actual file names
-    files_id    = ['17_FbHyzLQJobcNJXnq9umJ5HfH5D7IZl']  # replace with actual file IDs or URLs
+    files_id    = ['1kSiHCgEluZdBVu_KTOJnBgxISIglgW8O']  # replace with actual file IDs or URLs
     
     print("models_dir = ",models_dir)
     # Create model directory if it doesnot exist
