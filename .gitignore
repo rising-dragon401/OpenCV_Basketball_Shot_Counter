@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 results/xml_modifications
+results/
 data/raw
 data/processed_videos
 data/secret

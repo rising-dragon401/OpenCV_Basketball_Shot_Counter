@@ -63,6 +63,8 @@ def get_correct_path(relative_path):
 
 
 def score(ball_traj, hoop_data, frame, attempt_num,debug):
+    disp_attempts = False
+    
     draw_frame = frame.copy()
     traj_x = []
     traj_y = []
@@ -111,9 +113,10 @@ def score(ball_traj, hoop_data, frame, attempt_num,debug):
 
                 cv2.circle(draw_frame,(int(predicted_x),int(hoop_rim_center_y)),3,(0,0,255),-1)
 
-                # Displaying the frame with the line
-                cv2.imshow(f'Attempt {attempt_num}', draw_frame)
-                cv2.waitKey(1)  # Adjust as needed for display
+                if disp_attempts:
+                    # Displaying the frame with the line
+                    cv2.imshow(f'Attempt-Made: {attempt_num}', draw_frame)
+                    #cv2.waitKey(0)
 
 
             if rim_x1 < predicted_x < rim_x2:
@@ -134,12 +137,13 @@ def detect_down(ball_pos, hoop_pos):
 
 # Detects if the ball is around the backboard - used to detect shot attempts
 def detect_up(ball_pos, hoop_pos):
+    curr_ball_pos = ball_pos[-1][0]
     x1 = hoop_pos[-1][0][0] - 4 * hoop_pos[-1][2]
     x2 = hoop_pos[-1][0][0] + 4 * hoop_pos[-1][2]
-    y1 = hoop_pos[-1][0][1] - 2 * hoop_pos[-1][3]
-    y2 = hoop_pos[-1][0][1]
+    y1 = hoop_pos[-1][0][1] - 4 * hoop_pos[-1][3]
+    y2 = hoop_pos[-1][0][1] - 0.5 * hoop_pos[-1][3]
 
-    if x1 < ball_pos[-1][0][0] < x2 and y1 < ball_pos[-1][0][1] < y2 - 0.5 * hoop_pos[-1][3]:
+    if x1 < curr_ball_pos[0] < x2 and y1 < curr_ball_pos[1] < y2:
         return True
     return False
 
@@ -190,13 +194,13 @@ def clean_ball_pos(ball_pos, frame_count):
         if (dist > max_dist) and (f_dif < 10):
             ball_pos.pop()
 
-        # Ball should be relatively square
-        elif (w2*1.4 < h2) or (h2*1.4 < w2):
+        # Ball should be relatively square [1 side cannot be too greater then the other as ball is round]
+        elif (w2*1.8 < h2) or (h2*1.8 < w2):
             ball_pos.pop()
 
     # Remove points older than 30 frames
     if len(ball_pos) > 0:
-        if frame_count - ball_pos[0][1] > 30:
+        if frame_count - ball_pos[0][1] > 50:
             ball_pos.pop(0)
 
     return ball_pos
@@ -229,11 +233,11 @@ def clean_hoop_pos(hoop_pos):
             hoop_pos.pop()
 
         # Hoop should be relatively square
-        if (w2*2 < h2) or (h2*2 < w2):
+        if (w2*3 < h2) or (h2*3 < w2):
             hoop_pos.pop()
 
     # Remove old points
-    if len(hoop_pos) > 25:
+    if len(hoop_pos) > 45:
         hoop_pos.pop(0)
 
     return hoop_pos
@@ -242,8 +246,8 @@ def clean_hoop_pos(hoop_pos):
 def download_missing_model_files():
     """Download missing model files from Google Drive."""
     models_dir = get_correct_path(os.path.join('data', 'models'))
-    model_files = ['yolov8s_bb_det_bigdtst_50e_best.pt']  # replace with actual file names
-    files_id    = ['1kSiHCgEluZdBVu_KTOJnBgxISIglgW8O']  # replace with actual file IDs or URLs
+    model_files = ['yolov8s_bb_det_bigdtst_v2_200e_bst.pt']  # replace with actual file names
+    files_id    = ['1mhjPDkW0ZuGsm8psPq6pJpUqav6l7OIC']  # replace with actual file IDs or URLs
     
     print("models_dir = ",models_dir)
     # Create model directory if it doesnot exist

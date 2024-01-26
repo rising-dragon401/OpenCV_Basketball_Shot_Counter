@@ -19,7 +19,7 @@ class ShotDetector:
         download_missing_model_files()
         
         # Load the YOLO model created from main.py - change text to your relative path
-        self.model = YOLO(get_correct_path(os.path.join("data","models","yolov8s_bb_det_bigdtst_50e_best.pt")))
+        self.model = YOLO(get_correct_path(os.path.join("data","models","yolov8s_bb_det_bigdtst_v2_200e_bst.pt")))
         self.class_names = ['Basketball', 'Made','Person','Basketball Hoop','shoot']
 
         self.ball_pos = []  # array of tuples ((x_pos, y_pos), frame count, width, height, conf)
@@ -92,7 +92,7 @@ class ShotDetector:
             output_path = root + '_processed.mp4'
 
             out = cv2.VideoWriter(output_path, fourcc, 20.0, (self.img_width, self.img_height))
-        
+
         while True:
             ret, self.frame = self.cap.read()       
             if not ret:
@@ -127,7 +127,7 @@ class ShotDetector:
                     center = (int(x1 + w / 2), int(y1 + h / 2))
 
                     # Only create ball points if high confidence or near hoop
-                    if (conf > .3 or (in_hoop_region(center, self.hoop_pos) and conf > 0.15)) and current_class == "Basketball":
+                    if (conf > .3 or (in_hoop_region(center, self.hoop_pos) and conf > 0.15)) and (current_class == "Basketball" or current_class =="shoot"):
                         self.ball_pos.append((center, self.frame_count, w, h, conf))
                         cvzone.cornerRect(self.frame, (x1, y1, w, h))
 
@@ -160,8 +160,6 @@ class ShotDetector:
             out.release()
         self.cap.release()
         cv2.destroyAllWindows()
-
-
 
     def clean_motion(self):
         # Clean and display ball motion
@@ -263,6 +261,7 @@ class ShotDetector:
 
                 # Drawing the trajectory line on the frame
                 cv2.line(self.frame, hoop_rim_toplft, hoop_rim_toprgt, (255, 0, 0), 2)
+                cv2.putText(self.frame,f"{hoop_rim_toplft}",(hoop_rim_lft_x-15,hoop_rim_top_y-15),cv2.FONT_HERSHEY_PLAIN,1,(255,255,255),1)
                 cv2.line(self.frame, hoop_rim_botlft, hoop_rim_botrgt, (0, 0, 255), 2)
 
     def display_score(self):
